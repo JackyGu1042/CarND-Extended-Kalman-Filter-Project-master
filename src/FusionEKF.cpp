@@ -37,8 +37,8 @@ FusionEKF::FusionEKF() {
     * Set the process and measurement noises
   */
  //state covariance matrix P
- kf_.P_ = MatrixXd(4, 4);
- kf_.P_ << 1, 0, 0, 0,
+ ekf_.P_ = MatrixXd(4, 4);
+ ekf_.P_ << 1, 0, 0, 0,
      	   0, 1, 0, 0,
 	   0, 0, 1000, 0,
 	   0, 0, 0, 1000;
@@ -47,8 +47,8 @@ FusionEKF::FusionEKF() {
              0, 1, 0, 0;
  
  //the initial transition matrix F_
-  kf_.F_ = MatrixXd(4, 4);
-  kf_.F_ << 1, 0, 1, 0,
+  ekf_.F_ = MatrixXd(4, 4);
+  ekf_.F_ << 1, 0, 1, 0,
 	    0, 1, 0, 1,
 	    0, 0, 1, 0,
 	    0, 0, 0, 1;
@@ -164,7 +164,9 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     ekf_.Update(measurement_pack.raw_measurements_);
   } else {
     // Laser updates
-    ekf_.Hj_  = tools.CalculateJacobian(estimations);    
+    Hj_  = tools.CalculateJacobian(estimations);
+    ekf_.Init(Eigen::VectorXd &x_in, Eigen::MatrixXd &P_in, Eigen::MatrixXd &F_in,
+      Hj_, Eigen::MatrixXd &R_in, Eigen::MatrixXd &Q_in);
     ekf_.UpdateEKF(measurement_pack.raw_measurements_);
   }
 
