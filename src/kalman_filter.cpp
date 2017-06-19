@@ -52,4 +52,22 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   TODO:
     * update the state by using Extended Kalman Filter equations
   */
+  float rho = z[0];
+  float phi = z[1];
+  float rhodot = z[2];
+      
+  VectorXd z_mea << rho*cos(phi), rho*sin(phi), rhodot*cos(phi), rhodot*sin(phi); 
+  VectorXd z_pred = Hj_ * x_;
+  VectorXd y = z_mea - z_pred;
+  MatrixXd Ht = Hj_.transpose();
+  MatrixXd S = Hj_ * P_ * Ht + R_;
+  MatrixXd Si = S.inverse();
+  MatrixXd PHt = P_ * Ht;
+  MatrixXd K = PHt * Si;
+
+  //new estimate
+  x_ = x_ + (K * y);
+  long x_size = x_.size();
+  MatrixXd I = MatrixXd::Identity(x_size, x_size);
+  P_ = (I - K * H_) * P_;
 }
