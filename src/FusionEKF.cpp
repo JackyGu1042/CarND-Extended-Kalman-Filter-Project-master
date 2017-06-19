@@ -145,6 +145,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     ekf_.Update(measurement_pack.raw_measurements_);
   } else {
     // Laser updates
+    ekf_.Hj_  = tools.CalculateJacobian(estimations);    
     ekf_.UpdateEKF(measurement_pack.raw_measurements_);
   }
 
