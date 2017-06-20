@@ -37,21 +37,29 @@ FusionEKF::FusionEKF() {
     * Set the process and measurement noises
   */
  //state covariance matrix P
+ //cout << "EKF: " << endl;
+ //ekf_.x_ = VectorXd(4);
+ //ekf_.x_ << 1, 1, 1, 1;
+
+ //the initial transition matrix F_
+ ekf_.F_ = MatrixXd(4, 4);
+ ekf_.F_ << 1, 0, 1, 0,
+	    0, 1, 0, 1,
+	    0, 0, 1, 0,
+	    0, 0, 0, 1;	
+	
+ H_laser_ << 1, 0, 0, 0,
+             0, 1, 0, 0;
+	
  ekf_.P_ = MatrixXd(4, 4);
  ekf_.P_ << 1, 0, 0, 0,
      	   0, 1, 0, 0,
 	   0, 0, 1000, 0,
 	   0, 0, 0, 1000;
 	
- H_laser_ << 1, 0, 0, 0,
-             0, 1, 0, 0;
  
- //the initial transition matrix F_
-  ekf_.F_ = MatrixXd(4, 4);
-  ekf_.F_ << 1, 0, 1, 0,
-	    0, 1, 0, 1,
-	    0, 0, 1, 0,
-	    0, 0, 0, 1;
+ 
+ 
 	
 }
 
